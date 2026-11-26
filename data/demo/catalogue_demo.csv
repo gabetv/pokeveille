@@ -1,0 +1,8 @@
+id,nom,categorie,type,langue,gamme,ean,asin,ref_fabricant,edition,contenu,variante,etat_carte,societe_gradation,note_gradation,lien_officiel,prix_conseille,source_prix_conseille,mots_cles
+demo_etb,DÉMO Coffret Dresseur d'élite Anniversaire,coffret dresseur d'élite,scelle,fr,30e anniversaire (DÉMO),2000000000015,B0DEMO0001,,,,,,,,,,,etb coffret dresseur elite
+demo_etb_en,DÉMO Elite Trainer Box Anniversary,coffret dresseur d'élite,scelle,en,30e anniversaire (DÉMO),2000000000053,B0DEMO0005,,,,,,,,,,,etb coffret import anglais
+demo_booster,DÉMO Booster Anniversaire,booster,scelle,fr,30e anniversaire (DÉMO),2000000000022,B0DEMO0002,,,,,,,,,,,booster
+demo_upc,DÉMO Collection Ultra-Premium Anniversaire,collection ultra-premium,scelle,fr,30e anniversaire (DÉMO),2000000000039,B0DEMO0003,,,,,,,,,,,upc coffret collection
+demo_peluche,DÉMO Peluche Pikachu Anniversaire 30 cm,peluche,derive,fr,30e anniversaire (DÉMO),2000000000046,B0DEMO0004,,,,,,,,,,,peluche pikachu
+demo_carte,DÉMO Pikachu promo Anniversaire,carte,carte,fr,30e anniversaire (DÉMO),,,DEMO-001,,,,NM,,,,,,carte promo pikachu
+demo_carte_psa10,DÉMO Pikachu promo Anniversaire,carte gradée,carte_gradee,fr,30e anniversaire (DÉMO),,,DEMO-001,,,,,PSA,10,,,,carte gradee psa pikachu

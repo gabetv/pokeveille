@@ -1,0 +1,78 @@
+# Version « site + webhook » : toutes les 30 minutes, GitHub lit la veille, compare les prix des produits
+# suivis (config/suivi.toml), poste les nouveautés dans le salon Discord (secret DISCORD_WEBHOOK_URL) et
+# publie le site sur GitHub Pages. La base SQLite est conservée d'une exécution à l'autre dans la branche
+# « donnees » (un seul commit, réécrit à chaque fois).
+name: Veille PokéVeille
+
+on:
+  schedule:
+    - cron: "7,37 * * * *" # toutes les 30 min (GitHub peut décaler de quelques minutes)
+  workflow_dispatch: # bouton « Run workflow »
+  push:
+    branches: [main]
+    paths: ["config/**", "data/catalogue.csv", "pokebot/**", ".github/workflows/veille.yml"]
+
+permissions:
+  contents: write # écrire la branche « donnees »
+  pages: write
+  id-token: write
+
+concurrency:
+  group: veille
+  cancel-in-progress: false
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    env:
+      BOT_MODE: reel
+      CHEMIN_BASE: data/pokeveille_site.sqlite3
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
+      AMAZON_CREDENTIAL_SECRET: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
+      AMAZON_CREDENTIAL_VERSION: "3.2"
+      AMAZON_PARTNER_TAG: ${{ secrets.AMAZON_PARTNER_TAG }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Dépendances (le site n'a pas besoin de discord.py)
+        run: pip install "httpx>=0.27,<1" "tzdata>=2024.1"
+
+      - name: Récupérer la base de veille
+        run: |
+          if git fetch --depth=1 origin donnees 2>/dev/null; then
+            git show FETCH_HEAD:pokeveille_site.sqlite3 > "$CHEMIN_BASE" || rm -f "$CHEMIN_BASE"
+          else
+            echo "Première exécution : base neuve (rien n'est envoyé pour l'existant)."
+          fi
+
+      - name: Veille, prix, envoi Discord, génération du site
+        run: python -m pokebot tache --dossier site
+
+      - name: Sauvegarder la base de veille
+        run: |
+          mkdir -p /tmp/donnees && cp "$CHEMIN_BASE" /tmp/donnees/pokeveille_site.sqlite3
+          cd /tmp/donnees
+          git init -q -b donnees
+          git config user.name "pokeveille-actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pokeveille_site.sqlite3
+          git commit -qm "Base de veille $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" donnees
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploiement
+        uses: actions/deploy-pages@v4

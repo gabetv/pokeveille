@@ -1,0 +1,14 @@
+# Produits suivis par la version « site + webhook » (GitHub Actions).
+# Le bot Discord, lui, utilise /suivre et /alerte : ce fichier ne le concerne pas.
+# Modifiable directement sur GitHub (bouton crayon) : la prochaine exécution en tient compte.
+
+# "tous" = toute la gamme 30e anniversaire du catalogue, ou une liste d'identifiants :
+# produits = ["ann30_etb", "ann30_upc_soiree", "ann30_pokebox_nymphali"]
+produits = "tous"
+
+# Prix maximum en euros (livraison comprise quand elle est connue). Une alerte part dans le salon quand
+# une offre fiable passe dessous ou quand le produit revient en stock. Retirez le « # » pour activer.
+[prix_max]
+# ann30_etb = 59.99
+# ann30_upc_soiree = 239.99
+# ann30_pokebox_nymphali = 26.99

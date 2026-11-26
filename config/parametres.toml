@@ -1,0 +1,90 @@
+# Réglages de PokéVeille 30 (aucun secret ici : les clés vont dans .env).
+
+[affichage]
+max_offres_par_produit = 8
+
+[alertes]
+frequence_par_defaut_minutes = 60
+frequence_minimale_minutes = 15   # plancher, pour respecter les quotas des API
+intervalle_tache_secondes = 60    # fréquence à laquelle le bot regarde quelles alertes sont dues
+
+[seuils]
+# Avis « Très bonne affaire » : total ≤ 90 % de la référence Amazon ET ≤ 95 % de la médiane.
+tres_bonne_affaire_amazon = 0.90
+tres_bonne_affaire_mediane = 0.95
+# Cartes à l'unité / gradées (pas de référence Amazon) : total ≤ 90 % de la médiane.
+tres_bonne_affaire_carte = 0.90
+# « Prix raisonnable » : au plus 5 % au-dessus de la référence Amazon OU de la médiane.
+raisonnable = 1.05
+# « Cher » : plus de 10 % au-dessus de la référence Amazon ET de la médiane.
+cher = 1.10
+# « À vérifier » : total < 60 % de la référence du marché.
+prix_anormal = 0.60
+# Signal d'information si la livraison dépasse 25 % du prix affiché.
+frais_port_eleves = 0.25
+min_offres_mediane = 3
+exiger_deux_references = true
+# Vendeur fiable : au moins 95 % d'avis positifs et 50 avis (Amazon et enseignes : toujours fiables).
+note_vendeur_min = 95
+avis_vendeur_min = 50
+
+[veille]
+# Calendrier des sorties (Poképédia), articles « où acheter » (Le CrocoDeal), blog Fnac L'Éclaireur,
+# arrivages signalés (/drop) et salons Discord suivis (DISCORD_SALONS_VEILLE dans .env).
+intervalle_minutes = 30           # lecture des sources de la veille (minimum 10)
+rappel_veille_de_sortie = true    # rappel la veille d'une date de sortie annoncée
+delai_entre_drops_minutes = 30    # un membre ne peut pas signaler deux fois le même produit dans ce délai
+
+# --- Sources ---------------------------------------------------------------
+# actif : interroger la source ou non.
+# delai_entre_requetes_secondes / cache_secondes : respect des quotas.
+# livraison_estimee / livraison_gratuite_des : barème que VOUS saisissez d'après les conditions
+#   du site (facultatif). Le total est alors affiché « estimé », jamais présenté comme exact.
+
+[sources.amazon_fr]
+actif = true
+delai_entre_requetes_secondes = 1.1   # quota initial Creators API : 1 requête par seconde
+cache_secondes = 900
+# livraison_estimee = 4.99
+# livraison_gratuite_des = 35.0
+
+[sources.csv_manuel]
+actif = true
+delai_entre_requetes_secondes = 0
+cache_secondes = 0
+
+# Le CrocoDeal : bons plans communautaires lus dans le flux RSS public (jamais de prix de référence).
+[sources.lecrocodeal]
+actif = true
+recherche = "pokemon"               # terme de recherche du flux
+age_max_jours = 14                  # bons plans plus anciens ignorés
+delai_entre_requetes_secondes = 5
+cache_secondes = 1800               # le flux n'est relu qu'une fois toutes les 30 minutes
+
+# Veille des sorties (pas des prix) :
+[sources.pokepedia]
+actif = true
+cache_secondes = 43200              # API Poképédia relue toutes les 12 h
+
+[sources.fnac_eclaireur]
+actif = true
+cache_secondes = 3600
+age_max_jours = 30
+
+[sources.fnac]
+actif = false
+
+[sources.cultura]
+actif = false
+
+[sources.joueclub]
+actif = false
+
+[sources.king_jouet]
+actif = false
+
+[sources.cardmarket]
+actif = false
+
+[sources.pokemon_officiel]
+actif = false
